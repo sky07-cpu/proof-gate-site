@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
 type IconName =
   | 'alert'
@@ -15,6 +15,13 @@ type IconName =
   | 'knowledge'
   | 'launch'
   | 'vendor'
+
+const navigation = [
+  { href: '#targets', label: '導入対象' },
+  { href: '#features', label: '機能' },
+  { href: '#pricing', label: '料金' },
+  { href: '#faq', label: 'FAQ' },
+]
 
 const challenges = [
   {
@@ -39,6 +46,29 @@ const challenges = [
   },
 ]
 
+const targets = [
+  {
+    icon: 'vendor' as IconName,
+    title: 'AI導入ベンダー',
+    text: '納品前の品質確認を標準化し、顧客へ説明できる検証レポートを残せます。',
+  },
+  {
+    icon: 'spark' as IconName,
+    title: '社内AI推進チーム',
+    text: 'PoCから本番運用まで、AI回答の品質基準をチームで共有できます。',
+  },
+  {
+    icon: 'chat' as IconName,
+    title: 'カスタマーサポート部門',
+    text: '顧客対応AIが危険な回答をしないか、公開前に確認できます。',
+  },
+  {
+    icon: 'knowledge' as IconName,
+    title: 'RAG型FAQを運用する企業',
+    text: 'FAQ更新後の回答変化を検査し、継続的な改善サイクルにつなげられます。',
+  },
+]
+
 const solutions = [
   { icon: 'spark' as IconName, title: 'テストケース生成', text: '検証観点を整理し、再利用できるテストケースを準備。' },
   { icon: 'search' as IconName, title: '回答と根拠の検査', text: '回答内容と参照根拠を並べ、妥当性を確認。' },
@@ -46,6 +76,44 @@ const solutions = [
   { icon: 'check' as IconName, title: '人間による承認', text: '最後は人間が判断し、承認結果を明確に記録。' },
   { icon: 'report' as IconName, title: 'レポート出力', text: '検査結果を、共有・説明に使える形でまとめる。' },
   { icon: 'archive' as IconName, title: '監査証跡の保存', text: '誰がいつ確認したかを、追跡可能な履歴として残す。' },
+]
+
+const featureDetails = [
+  {
+    icon: 'spark' as IconName,
+    title: 'テストケース管理',
+    text: '質問、期待回答、評価観点をまとめ、リリース前後で繰り返し使える形にします。',
+  },
+  {
+    icon: 'search' as IconName,
+    title: '回答検査',
+    text: 'AIが返した回答をテストケースごとに確認し、品質のばらつきを把握します。',
+  },
+  {
+    icon: 'document' as IconName,
+    title: '根拠確認',
+    text: '回答が参照した文書やFAQと矛盾していないか、人間が判断しやすい形で表示します。',
+  },
+  {
+    icon: 'risk' as IconName,
+    title: 'リスク判定',
+    text: '誤情報、断定表現、個人情報、禁止表現など、注意すべき観点を整理します。',
+  },
+  {
+    icon: 'check' as IconName,
+    title: '人間承認',
+    text: '最終判断を人間が行い、誰が承認したかを品質記録として残します。',
+  },
+  {
+    icon: 'report' as IconName,
+    title: 'レポート出力',
+    text: '検証結果を社内共有、顧客説明、納品前チェックに使えるレポートとしてまとめます。',
+  },
+  {
+    icon: 'archive' as IconName,
+    title: '監査ログ',
+    text: '検査日時、判定、承認者、変更履歴を後から追える証跡として保存します。',
+  },
 ]
 
 const useCases = [
@@ -61,6 +129,59 @@ const workflow = [
   { step: '03', title: '回答・根拠・リスクを検査', text: '複数の観点から品質を評価' },
   { step: '04', title: '人間が承認', text: '結果を確認し、判断を記録' },
   { step: '05', title: 'レポートとして出力', text: '共有できる監査証跡を作成' },
+]
+
+const pricingPlans = [
+  {
+    name: 'Starter',
+    label: '小さく検証を始めたいチーム向け',
+    price: 'お問い合わせ',
+    description: 'PoCや初期導入で、AI回答品質の確認フローを試したい方向け。',
+    features: ['基本的なテストケース管理', '回答・根拠の確認', '簡易レポート出力'],
+  },
+  {
+    name: 'Team',
+    label: '継続運用するチーム向け',
+    price: 'お問い合わせ',
+    description: '複数メンバーで承認フローを回し、品質記録を残したい方向け。',
+    features: ['チームでの承認管理', 'リスク判定の整理', '監査ログの保存'],
+    highlighted: true,
+  },
+  {
+    name: 'Enterprise',
+    label: '全社・顧客向け運用に',
+    price: 'お問い合わせ',
+    description: '部署横断、顧客説明、納品前チェックなど、より厳密な運用向け。',
+    features: ['高度なレポート設計', '運用ルールの設計支援', '個別要件への対応相談'],
+  },
+]
+
+const faqs = [
+  {
+    question: 'Proof Gateは何をするサービスですか？',
+    answer:
+      '生成AIやRAG型チャットボットの回答品質を、テストケースで検査し、人間が承認し、その記録をレポートとして残すための品質管理基盤です。',
+  },
+  {
+    question: 'RAG型AI以外にも使えますか？',
+    answer:
+      'はい。FAQ、社内ナレッジ検索、顧客対応AIなど、回答内容の正しさや説明責任が重要なAIであれば活用できます。',
+  },
+  {
+    question: 'ログインやデータベースは今ありますか？',
+    answer:
+      '現時点のサイトは紹介用の静的1ページLPです。ログイン、データベース、API連携、問い合わせ送信処理はまだ実装していません。',
+  },
+  {
+    question: '導入ベンダー向けですか？',
+    answer:
+      '導入ベンダーにも向いています。納品前のチェック、顧客への説明資料、品質確認プロセスの標準化に使える想定です。',
+  },
+  {
+    question: 'レポートは何に使えますか？',
+    answer:
+      '社内レビュー、リリース判定、顧客説明、監査対応、改善履歴の共有など、AI回答品質を説明する場面で使えます。',
+  },
 ]
 
 function Icon({ name }: { name: IconName }) {
@@ -100,7 +221,7 @@ function SectionHeading({
   align?: 'left' | 'center'
 }) {
   return (
-    <div className={`section-heading section-heading--${align}`}>
+    <div className={`section-heading section-heading--${align} reveal`}>
       <p className="eyebrow">{eyebrow}</p>
       <h2>{title}</h2>
       {text && <p className="section-description">{text}</p>}
@@ -118,25 +239,67 @@ function Logo() {
 }
 
 function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [openFaqIndex, setOpenFaqIndex] = useState(0)
+
+  // スクロール時に .reveal 要素へ is-visible を付け、ふわっと表示させます。
+  useEffect(() => {
+    const revealTargets = document.querySelectorAll<HTMLElement>('.reveal')
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.16 },
+    )
+
+    revealTargets.forEach((target) => observer.observe(target))
+
+    return () => observer.disconnect()
+  }, [])
+
+  const closeMenu = () => setIsMenuOpen(false)
+
   return (
     <>
-      <header className="site-header">
+      <header className={`site-header ${isMenuOpen ? 'is-menu-open' : ''}`}>
         <div className="container header-inner">
           <Logo />
-          <nav aria-label="メインナビゲーション">
-            <a href="#challenges">課題</a>
-            <a href="#features">機能</a>
-            <a href="#workflow">ワークフロー</a>
+          <nav className="desktop-nav" aria-label="メインナビゲーション">
+            {navigation.map((item) => (
+              <a href={item.href} key={item.href}>{item.label}</a>
+            ))}
           </nav>
-          <a className="button button--small button--outline" href="#final-cta">お問い合わせ</a>
+          <a className="button button--small button--outline header-cta" href="#final-cta">お問い合わせ</a>
+          <button
+            className="menu-button"
+            type="button"
+            aria-label="ナビゲーションを開閉する"
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen((current) => !current)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
         </div>
+        <nav className="mobile-nav" aria-label="スマートフォン用ナビゲーション">
+          {navigation.map((item) => (
+            <a href={item.href} key={item.href} onClick={closeMenu}>{item.label}</a>
+          ))}
+          <a href="#final-cta" onClick={closeMenu}>お問い合わせ</a>
+        </nav>
       </header>
 
       <main>
         <section className="hero" id="top">
           <div className="hero-grid" aria-hidden="true" />
           <div className="container hero-layout">
-            <div className="hero-copy">
+            <div className="hero-copy reveal">
               <div className="hero-badge"><span /> AI Quality Assurance Platform</div>
               <h1>生成AIの回答品質を、<br /><em>検査・承認・記録</em>する。</h1>
               <p className="hero-text">
@@ -221,9 +384,24 @@ function App() {
             <SectionHeading eyebrow="THE CHALLENGE" title="その品質確認、担当者の経験だけに頼っていませんか？" text="生成AIの活用が広がるほど、回答品質を継続的に管理する仕組みが必要になります。" />
             <div className="challenge-grid">
               {challenges.map((item, index) => (
-                <article className="challenge-card" key={item.title}>
+                <article className="challenge-card reveal" key={item.title}>
                   <span className="card-number">0{index + 1}</span>
                   <span className="icon-box icon-box--muted"><Icon name={item.icon} /></span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section targets" id="targets">
+          <div className="container">
+            <SectionHeading eyebrow="WHO IT'S FOR" title="AI回答品質を説明する責任があるチームへ。" text="Proof Gateは、AIを作る側・運用する側・顧客対応に使う側の品質確認を支えます。" />
+            <div className="target-grid">
+              {targets.map((item) => (
+                <article className="target-card reveal" key={item.title}>
+                  <span className="icon-box"><Icon name={item.icon} /></span>
                   <h3>{item.title}</h3>
                   <p>{item.text}</p>
                 </article>
@@ -241,16 +419,33 @@ function App() {
                 text="Proof Gateは、AI回答の検査から承認、レポート作成までを一貫したプロセスに整えます。"
                 align="left"
               />
-              <div className="solution-statement">
+              <div className="solution-statement reveal">
                 <span><Icon name="shield" /></span>
                 <p><b>判断を置き換えるのではなく、</b>人間がより確かに判断できる環境をつくります。</p>
               </div>
             </div>
             <div className="solution-grid">
               {solutions.map((item, index) => (
-                <article className="solution-card" key={item.title}>
+                <article className="solution-card reveal" key={item.title}>
                   <span className="icon-box"><Icon name={item.icon} /></span>
                   <div><small>0{index + 1}</small><h3>{item.title}</h3><p>{item.text}</p></div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section feature-detail-section">
+          <div className="container">
+            <SectionHeading eyebrow="FEATURE DETAILS" title="検査・承認・記録に必要な機能を一通り。" text="まずは静的サイトとして表現していますが、将来Webアプリ化しやすいよう、機能のまとまりが見える構成にしています。" />
+            <div className="feature-detail-grid">
+              {featureDetails.map((item) => (
+                <article className="feature-detail-card reveal" key={item.title}>
+                  <span className="icon-box icon-box--compact"><Icon name={item.icon} /></span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.text}</p>
+                  </div>
                 </article>
               ))}
             </div>
@@ -262,7 +457,7 @@ function App() {
             <SectionHeading eyebrow="USE CASES" title="AIの品質を説明する、あらゆる現場へ。" />
             <div className="use-case-grid">
               {useCases.map((item) => (
-                <article className="use-case-card" key={item.number}>
+                <article className="use-case-card reveal" key={item.number}>
                   <span className="use-case-number">{item.number}</span>
                   <span className="use-case-icon"><Icon name={item.icon} /></span>
                   <h3>{item.label}</h3>
@@ -278,7 +473,7 @@ function App() {
             <SectionHeading eyebrow="HOW IT WORKS" title="検査から承認まで、迷わない5ステップ。" text="チームの誰もが同じ流れで品質を確認でき、結果を次の改善へつなげられます。" />
             <div className="workflow">
               {workflow.map((item, index) => (
-                <article className="workflow-step" key={item.step}>
+                <article className="workflow-step reveal" key={item.step}>
                   <div className="step-marker">
                     <span>{item.step}</span>
                     {index < workflow.length - 1 && <i />}
@@ -291,7 +486,7 @@ function App() {
                 </article>
               ))}
             </div>
-            <div className="workflow-result">
+            <div className="workflow-result reveal">
               <span><Icon name="check" /></span>
               <div><small>OUTPUT</small><b>説明可能な品質レポートが完成</b></div>
               <p>検査条件・回答・根拠・リスク・承認者を、ひとつの記録として保存。</p>
@@ -299,9 +494,65 @@ function App() {
           </div>
         </section>
 
+        <section className="section pricing-section" id="pricing">
+          <div className="container">
+            <SectionHeading eyebrow="PRICING" title="導入段階に合わせて選べる料金プラン。" text="金額は仮置きです。現時点では、要件や利用規模を確認したうえでのご相談を想定しています。" />
+            <div className="pricing-grid">
+              {pricingPlans.map((plan) => (
+                <article className={`pricing-card reveal ${plan.highlighted ? 'pricing-card--featured' : ''}`} key={plan.name}>
+                  {plan.highlighted && <span className="plan-badge">おすすめ</span>}
+                  <p className="plan-label">{plan.label}</p>
+                  <h3>{plan.name}</h3>
+                  <p className="plan-price">{plan.price}</p>
+                  <p className="plan-description">{plan.description}</p>
+                  <ul>
+                    {plan.features.map((feature) => (
+                      <li key={feature}><Icon name="check" /> {feature}</li>
+                    ))}
+                  </ul>
+                  <a className={`button ${plan.highlighted ? 'button--primary' : 'button--plan'}`} href="#final-cta">相談する</a>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section faq-section" id="faq">
+          <div className="container faq-layout">
+            <SectionHeading
+              eyebrow="FAQ"
+              title="よくある質問"
+              text="導入前によく確認されるポイントをまとめました。気になる質問をクリックすると回答を確認できます。"
+              align="left"
+            />
+            <div className="faq-list reveal">
+              {faqs.map((faq, index) => {
+                const isOpen = openFaqIndex === index
+
+                return (
+                  <article className={`faq-item ${isOpen ? 'is-open' : ''}`} key={faq.question}>
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      aria-controls={`faq-answer-${index}`}
+                      onClick={() => setOpenFaqIndex(isOpen ? -1 : index)}
+                    >
+                      <span>{faq.question}</span>
+                      <i aria-hidden="true" />
+                    </button>
+                    <div className="faq-answer" id={`faq-answer-${index}`}>
+                      <p>{faq.answer}</p>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+
         <section className="final-cta" id="final-cta">
           <div className="cta-grid" aria-hidden="true" />
-          <div className="container cta-content">
+          <div className="container cta-content reveal">
             <span className="cta-mark"><Icon name="shield" /></span>
             <p className="eyebrow">START WITH PROOF GATE</p>
             <h2>AI回答の品質確認を、<br />属人的なチェックから<br className="mobile-only" />再現可能なプロセスへ。</h2>
@@ -315,10 +566,26 @@ function App() {
         </section>
       </main>
 
-      <footer>
-        <div className="container footer-inner">
-          <Logo />
-          <p>AI Quality, Verified.</p>
+      <footer className="site-footer">
+        <div className="container footer-grid">
+          <div className="footer-brand">
+            <Logo />
+            <p>生成AIの回答品質を、検査・承認・記録する品質管理基盤。</p>
+          </div>
+          <div className="footer-links">
+            <h2>Navigation</h2>
+            {navigation.map((item) => (
+              <a href={item.href} key={item.href}>{item.label}</a>
+            ))}
+          </div>
+          <div className="footer-contact">
+            <h2>Contact</h2>
+            <p>導入相談・資料確認は、まずはお問い合わせから。</p>
+            <a className="footer-contact-link" href="#final-cta">お問い合わせへ進む</a>
+          </div>
+        </div>
+        <div className="container footer-bottom">
+          <span>AI Quality, Verified.</span>
           <small>© 2026 Proof Gate. All rights reserved.</small>
         </div>
       </footer>
