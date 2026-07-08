@@ -264,7 +264,7 @@ h3 {
 
 .data-card {
   position: absolute;
-  z-index: 2;
+  z-index: 4;
   padding: 14px 18px;
   display: grid;
   gap: 3px;
@@ -275,6 +275,7 @@ h3 {
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(12px);
   animation: cardFloat 10s ease-in-out infinite alternate;
+  pointer-events: none;
 }
 
 .data-card span {
